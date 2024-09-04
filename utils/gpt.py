@@ -62,8 +62,3 @@ def generate_gpt_response(user_message, system_message="You are a helpful assist
     
     # GPT API 호출
     return call_gpt_api(messages)
-
-# Code for Test
-user_message = 'What is the capital of France? Respond in the same JSON format as: {"capital": your_answer}.'
-response = generate_gpt_response(user_message)
-print(response)
