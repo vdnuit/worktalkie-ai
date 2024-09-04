@@ -28,6 +28,7 @@ def call_gpt_api(messages, model="gpt-3.5-turbo", temperature=0.7, max_tokens=10
             response = client.chat.completions.create(  # 최신 인터페이스
                 model=model,
                 messages=messages,
+                response_format={"type": "json_object"},
                 temperature=temperature,
                 max_tokens=max_tokens
             )
@@ -63,6 +64,6 @@ def generate_gpt_response(user_message, system_message="You are a helpful assist
     return call_gpt_api(messages)
 
 # Code for Test
-user_message = "What is the capital of France?"
+user_message = 'What is the capital of France? Respond in the same JSON format as: {"capital": your_answer}.'
 response = generate_gpt_response(user_message)
 print(response)
