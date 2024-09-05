@@ -2,6 +2,7 @@ import os
 from openai import OpenAI
 
 import time
+import json
 
 api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
@@ -19,7 +20,8 @@ def call_gpt_api(messages, response_format, model="gpt-4o-mini", temperature=0.7
                 max_tokens=max_tokens
             )
             response_text = response.choices[0].message.content
-            return response_text
+            response_json = json.loads(response_text)
+            return response_json
         except Exception as e:
             attempt += 1
             print(f"Attempt {attempt} failed: {e}")
