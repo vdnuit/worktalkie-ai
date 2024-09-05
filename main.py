@@ -12,13 +12,13 @@ def main():
         input_data = json.load(f)
 
     turn_num= len(input_data['dialogue'])
-
-    if turn_num == 0:
-        run_conversation(input_data, "start_conversation")
-    elif turn_num >=20:
-        run_conversation(input_data)
-    else:
-        run_conversation(input_data)
+    run_conversation(input_data, "start_conversation")
+    # if turn_num == 0:
+    #     run_conversation(input_data, "start_conversation")
+    # elif turn_num >=20:
+    #     run_conversation(input_data, "continue_conversaiton")
+    # else:
+    #     run_conversation(input_data)
 
 if __name__ == "__main__":
     main()
