@@ -7,13 +7,13 @@ api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
 
-def call_gpt_api(messages, model="gpt-3.5-turbo", temperature=0.7, max_tokens=100, retries=3):
+def call_gpt_api(messages, model="gpt-4o-mini", temperature=0.7, max_tokens=200, retries=3):
     """
     GPT API를 호출하는 함수, 실패 시 최대 3번까지 재시도
 
     Args:
     - messages (list): GPT에게 보낼 메시지 리스트 (시스템, 사용자, GPT의 메시지 포함)
-    - model (str): 사용할 GPT 모델 (기본값: gpt-3.5-turbo)
+    - model (str): 사용할 GPT 모델 (기본값: gpt-4o-mini)
     - temperature (float): 답변의 창의성 (0.0 ~ 1.0)
     - max_tokens (int): 생성할 최대 토큰 수
     - retries (int): 실패 시 재시도할 횟수 (기본값: 3)
