@@ -1,6 +1,6 @@
 from utils.gpt import generate_gpt_response
 
-from .models import EvalEtiqList
+from .models import create_eval_etiq_list_model
 from .constants import SCRIPTS_PATH, SCRIPTS_NAME, SYSTEM_PROMPT
 
 def format_script(script: str, input_data: dict) -> str:
@@ -8,6 +8,9 @@ def format_script(script: str, input_data: dict) -> str:
     return script.format(
         dialogue=input_data['dialogue']
     )
+
+def count_user_dialogue(input_data):
+    return sum(1 for item in input_data.get('dialogue', []) if 'User' in item)
 
 def eval_etiquette(input_data):
 
@@ -22,6 +25,9 @@ def eval_etiquette(input_data):
     formatted_script = format_script(script, input_data)
     print(formatted_script)
     
+    dialogue_len = count_user_dialogue(input_data)
+    print(dialogue_len)
+    EvalEtiqList = create_eval_etiq_list_model(dialogue_len, dialogue_len)
     response_format = EvalEtiqList
     # GPT 모델 호출
     response = generate_gpt_response(
