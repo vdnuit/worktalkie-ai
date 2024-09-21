@@ -30,6 +30,25 @@ def generate_gpt_response_with_retry(formatted_script, response_format, system_p
     # 최대 재시도에 도달한 경우 오류 메시지 출력
     raise ValueError(f"Response 길이가 {valid_len}과 맞지 않습니다. 최대 {max_retries}번 재시도했으나 실패했습니다.")
 
+def cal_manners_score(dialogue):
+    """
+    dialogue 리스트에서 expression_type이 0인 경우를 계산하고,
+    매너에 어긋나지 않은 비율을 10의 자리에서 반올림하여 점수로 반환하는 함수.
+    """
+    # 매너에 어긋나지 않은 턴 (expression_type이 0인 경우)
+    manners_turns = sum(1 for turn in dialogue if turn['expression_type'] == 0)
+    
+    # 전체 턴 개수
+    total_turns = len(dialogue)
+    
+    # 매너에 어긋나지 않은 턴의 비율을 계산하고 10의 자리에서 반올림
+    if total_turns > 0:
+        score = round((manners_turns / total_turns) * 100, -1)
+    else:
+        score = 0  # 턴이 없을 경우 0점
+    
+    return score
+
 def eval_etiquette(input_data):
 
     # 스크립트 파일 경로 설정
@@ -54,11 +73,8 @@ def eval_etiquette(input_data):
     except ValueError as e:
         print(f"오류 발생: {e}")
 
-    import json
-    with open('results/etiq.json', 'w', encoding='utf-8') as json_file:
-        json.dump(response, json_file, ensure_ascii=False, indent=4)
-
-    score = None
+    score = cal_manners_score(response['dialogue'])
+    print(score)
     feedback = None
 
     return score, feedback
