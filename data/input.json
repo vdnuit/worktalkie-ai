@@ -7,7 +7,7 @@
         "팀원들에게 발표자료에 대해 설명하기",
         "팀원들에게 발표내용에 대해 설명하기"
     ],
-    "is_missions_completed": [true,true,true],
+    "is_missions_completed": [true,false,false],
     "is_end": false,
     "dialogue": [
         {

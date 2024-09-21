@@ -1,6 +1,17 @@
 from utils.gpt import generate_gpt_response
 from .models import StartConv, ContinueConv
 
+def update_missions(input_data, response):
+    # 미션 완료 여부 업데이트
+    input_data['is_missions_completed'][0] = response['is_mission1'] or input_data['is_missions_completed'][0]
+    input_data['is_missions_completed'][1] = response['is_mission2'] or input_data['is_missions_completed'][1]
+    input_data['is_missions_completed'][2] = response['is_mission3'] or input_data['is_missions_completed'][2]
+
+    # 대화 종료 여부 업데이트
+    input_data['is_end'] = response['is_end'] or input_data['is_end']
+
+    return input_data
+
 def run_conversation(input_data, status):
     
     with open(f"scripts/{status}.txt", "r", encoding="utf-8") as file:
@@ -24,5 +35,8 @@ def run_conversation(input_data, status):
     print(response)
 
     input_data['dialogue'].append({"AI": response['answer']})
+
+    if status == "continue_conversation":
+        input_data = update_missions(input_data, response)
 
     return input_data
