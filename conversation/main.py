@@ -1,6 +1,14 @@
 from utils.gpt import generate_gpt_response
 from .models import StartConv, ContinueConv, TermConv
 
+def get_response_format(status):
+    if status == "start_conversation":
+        return StartConv
+    elif status == "continue_conversation":
+        return ContinueConv
+    elif status == "terminate_conversation":
+        return TermConv
+
 def update_missions(input_data, response):
     # 미션 완료 여부 업데이트
     input_data['is_missions_completed'][0] = response['is_mission1'] or input_data['is_missions_completed'][0]
@@ -26,12 +34,7 @@ def run_conversation(input_data, status):
     )
     
     print(script)
-    if status == "start_conversation":
-        response_format = StartConv
-    elif status == "continue_conversation":
-        response_format = ContinueConv
-    elif status == "terminate_conversation":
-        response_format = TermConv
+    response_format = get_response_format(status)
 
     response = generate_gpt_response(
         script, response_format, "너는 사회초년생의 비즈니스 매너를 위한 롤플레잉을 도와주는 AI 챗봇이야."
