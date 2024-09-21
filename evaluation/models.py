@@ -1,4 +1,4 @@
-from pydantic import BaseModel, conlist
+from pydantic import BaseModel
 from typing import List
 from enum import Enum
 
@@ -15,13 +15,5 @@ class EvalEtiq(BaseModel):
     feedback: str
     fixed_turn: str
 
-def create_eval_etiq_list_model(min_len: int, max_len: int):
-    return type(
-        'EvalEtiqList',
-        (BaseModel,),
-        {
-            '__annotations__': {
-                'dialogue': conlist(EvalEtiq, min_length=min_len, max_length=max_len)
-            }
-        }
-    )
+class EvalEtiqList(BaseModel):
+    dialogue: List[EvalEtiq]
