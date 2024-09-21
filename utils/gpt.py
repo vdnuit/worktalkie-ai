@@ -10,7 +10,7 @@ if api_key is None:
 client = OpenAI(api_key=api_key)
 
 
-def call_gpt_api(messages, response_format, model="gpt-4o-mini", temperature=0.7, max_tokens=200, retries=3):
+def call_gpt_api(messages, response_format, model="gpt-4o-mini", temperature=0.7, retries=3):
     attempt = 0
     while attempt < retries:
         try:
@@ -19,7 +19,6 @@ def call_gpt_api(messages, response_format, model="gpt-4o-mini", temperature=0.7
                 messages=messages,
                 response_format=response_format,
                 temperature=temperature,
-                max_tokens=max_tokens
             )
             response_text = response.choices[0].message.content
             response_json = json.loads(response_text)

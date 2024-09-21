@@ -1,6 +1,6 @@
 from utils.gpt import generate_gpt_response
 from .utils import format_script, get_response_format
-from .constants import SCRIPTS_PATH, DEFAULT_AI_PROMPT
+from .constants import SCRIPTS_PATH, SYSTEM_PROMPT
 
 def determine_status(dialogue):
     turn_num = len(dialogue)
@@ -49,7 +49,7 @@ def run_conversation(input_data):
 
     # GPT 모델 호출
     response = generate_gpt_response(
-        formatted_script, response_format, DEFAULT_AI_PROMPT
+        formatted_script, response_format, SYSTEM_PROMPT
     )
     print(response)
 
