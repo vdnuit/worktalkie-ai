@@ -1,5 +1,5 @@
 from utils.gpt import generate_gpt_response
-from .models import StartConv, ContinueConv
+from .models import StartConv, ContinueConv, TermConv
 
 def update_missions(input_data, response):
     # 미션 완료 여부 업데이트
@@ -8,7 +8,7 @@ def update_missions(input_data, response):
     input_data['is_missions_completed'][2] = response['is_mission3'] or input_data['is_missions_completed'][2]
 
     # 대화 종료 여부 업데이트
-    input_data['is_end'] = response['is_end'] or input_data['is_end']
+    input_data['is_end'] = response.get('is_end', False) or input_data['is_end']
 
     return input_data
 
@@ -30,13 +30,17 @@ def run_conversation(input_data, status):
         response_format = StartConv
     elif status == "continue_conversation":
         response_format = ContinueConv
+    elif status == "terminate_conversation":
+        response_format = TermConv
 
-    response = generate_gpt_response(script, response_format, "너는 사회초년생의 비즈니스 매너를 위한 롤플레잉을 도와주는 AI 챗봇이야.")
+    response = generate_gpt_response(
+        script, response_format, "너는 사회초년생의 비즈니스 매너를 위한 롤플레잉을 도와주는 AI 챗봇이야."
+        )
     print(response)
 
     input_data['dialogue'].append({"AI": response['answer']})
 
-    if status == "continue_conversation":
+    if status == "continue_conversation" or status == "terminate_conversation":
         input_data = update_missions(input_data, response)
 
     return input_data
