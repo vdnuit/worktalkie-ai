@@ -1,49 +1,25 @@
-from utils.gpt import generate_gpt_response
-from .models import StartConv, ContinueConv, TerminateConv
+import json
+import argparse
+from .conv import run_conversation
 
-def get_response_format(status):
-    if status == "start_conversation":
-        return StartConv
-    elif status == "continue_conversation":
-        return ContinueConv
-    elif status == "terminate_conversation":
-        return TerminateConv
+def load_input_data(input_file):
+    with open(input_file, 'r') as f:
+        return json.load(f)
 
-def update_missions(input_data, response):
-    # 미션 완료 여부 업데이트
-    input_data['is_missions_completed'][0] = response['is_mission1'] or input_data['is_missions_completed'][0]
-    input_data['is_missions_completed'][1] = response['is_mission2'] or input_data['is_missions_completed'][1]
-    input_data['is_missions_completed'][2] = response['is_mission3'] or input_data['is_missions_completed'][2]
+def save_output_data(output_file, output_data):
+    with open(output_file, 'w', encoding='utf-8') as json_file:
+        json.dump(output_data, json_file, ensure_ascii=False, indent=4)
 
-    # 대화 종료 여부 업데이트 (is_end 필드 없을 시 True)
-    input_data['is_end'] = response.get('is_end', True) or input_data['is_end']
+def main():
+    parser = argparse.ArgumentParser(description='Process a JSON file and send it to the GPT API.')
+    parser.add_argument('input_file', type=str, help='The path to the JSON input file.')
+    parser.add_argument('output_file', type=str, help='The path to the JSON output file.')
 
-    return input_data
+    args = parser.parse_args()
 
-def run_conversation(input_data, status):
-    
-    with open(f"scripts/{status}.txt", "r", encoding="utf-8") as file:
-        script = file.read()
+    input_data = load_input_data(args.input_file)
+    output_data = run_conversation(input_data)
+    save_output_data(args.output_file, output_data)
 
-    script = script.format(
-        senario = input_data['senario'],
-        background = input_data['background'],
-        role_of_ai = input_data['role_of_ai'],
-        missions = input_data['missions'],
-        dialogue = input_data['dialogue']
-    )
-    
-    print(script)
-    response_format = get_response_format(status)
-
-    response = generate_gpt_response(
-        script, response_format, "너는 사회초년생의 비즈니스 매너를 위한 롤플레잉을 도와주는 AI 챗봇이야."
-        )
-    print(response)
-
-    input_data['dialogue'].append({"AI": response['answer']})
-
-    if status == "continue_conversation" or status == "terminate_conversation":
-        input_data = update_missions(input_data, response)
-
-    return input_data
+if __name__ == "__main__":
+    main()
