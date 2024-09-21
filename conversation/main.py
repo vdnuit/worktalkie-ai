@@ -1,5 +1,5 @@
 from utils.gpt import generate_gpt_response
-from .models import StartConv, ContinueConv, TermConv
+from .models import StartConv, ContinueConv, TerminateConv
 
 def get_response_format(status):
     if status == "start_conversation":
@@ -7,7 +7,7 @@ def get_response_format(status):
     elif status == "continue_conversation":
         return ContinueConv
     elif status == "terminate_conversation":
-        return TermConv
+        return TerminateConv
 
 def update_missions(input_data, response):
     # 미션 완료 여부 업데이트
@@ -15,8 +15,8 @@ def update_missions(input_data, response):
     input_data['is_missions_completed'][1] = response['is_mission2'] or input_data['is_missions_completed'][1]
     input_data['is_missions_completed'][2] = response['is_mission3'] or input_data['is_missions_completed'][2]
 
-    # 대화 종료 여부 업데이트
-    input_data['is_end'] = response.get('is_end', False) or input_data['is_end']
+    # 대화 종료 여부 업데이트 (is_end 필드 없을 시 True)
+    input_data['is_end'] = response.get('is_end', True) or input_data['is_end']
 
     return input_data
 
