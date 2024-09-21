@@ -1,5 +1,5 @@
 from utils.gpt import generate_gpt_response
-from .models import StartConv
+from .models import StartConv, ContinueConv
 
 def run_conversation(input_data, status):
     
@@ -14,13 +14,15 @@ def run_conversation(input_data, status):
         dialogue = input_data['dialogue']
     )
     
+    print(script)
     if status == "start_conversation":
         response_format = StartConv
+    elif status == "continue_conversation":
+        response_format = ContinueConv
 
     response = generate_gpt_response(script, response_format, "너는 사회초년생의 비즈니스 매너를 위한 롤플레잉을 도와주는 AI 챗봇이야.")
     print(response)
 
     input_data['dialogue'].append({"AI": response['answer']})
-    
 
     return input_data

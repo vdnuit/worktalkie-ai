@@ -14,16 +14,16 @@ def main():
         input_data = json.load(f)
 
     turn_num= len(input_data['dialogue'])
-    output_data = run_conversation(input_data, "start_conversation")
+
+    if turn_num == 0:
+        output_data = run_conversation(input_data, "start_conversation")
+    elif turn_num >=20:
+        output_data = run_conversation(input_data, "terminate_conversation")
+    else:
+        output_data = run_conversation(input_data, "continue_conversation")
 
     with open(args.output_file, 'w', encoding='utf-8') as json_file:
         json.dump(output_data, json_file, ensure_ascii=False, indent=4)
-    # if turn_num == 0:
-    #     run_conversation(input_data, "start_conversation")
-    # elif turn_num >=20:
-    #     run_conversation(input_data, "continue_conversaiton")
-    # else:
-    #     run_conversation(input_data)
-
+        
 if __name__ == "__main__":
     main()
