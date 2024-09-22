@@ -75,6 +75,6 @@ def eval_etiquette(input_data):
 
     score = cal_manners_score(response['dialogue'])
     print(score)
-    feedback = None
+    feedback = response['dialogue']
 
     return score, feedback
