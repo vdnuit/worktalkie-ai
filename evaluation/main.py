@@ -1,3 +1,4 @@
+import os
 import json
 import argparse
 from .eval import run_evaluation
@@ -7,10 +8,24 @@ def load_input_data(input_file):
     with open(input_file, 'r') as f:
         return json.load(f)
 
-def load_mp3_audio(audio_path):
-    audio = AudioSegment.from_mp3(audio_path)
-    return audio
-    
+def load_user_audio_folder(folder_path):
+    audio_files = []
+
+    # 폴더 내 모든 파일을 탐색
+    for file_name in os.listdir(folder_path):
+        # .mp3 확장자를 가진 파일만 처리
+        if file_name.endswith('.mp3'):
+            audio_path = os.path.join(folder_path, file_name)
+            # MP3 파일을 AudioSegment로 읽어들임
+            audio = AudioSegment.from_mp3(audio_path)
+            # 파일 제목과 오디오 객체를 딕셔너리로 묶어서 리스트에 추가
+            audio_files.append({
+                'title': file_name,      # 파일 이름 (제목)
+                'audio': audio           # AudioSegment 객체
+            })
+
+    return audio_files
+
 def save_output_data(output_file, output_data):
     with open(output_file, 'w', encoding='utf-8') as json_file:
         json.dump(output_data, json_file, ensure_ascii=False, indent=4)
@@ -18,13 +33,13 @@ def save_output_data(output_file, output_data):
 def main():
     parser = argparse.ArgumentParser(description='Process a JSON file and send it to the GPT API.')
     parser.add_argument('input_file', type=str, help='The path to the JSON input file.')
-    parser.add_argument('input_audio_path', type=str, help='The path to the MP3 input file.')
+    parser.add_argument('input_audio_folder', type=str, help='The path to the MP3 input file.')
     parser.add_argument('output_file', type=str, help='The path to the JSON output file.')
 
     args = parser.parse_args()
 
     input_data = load_input_data(args.input_file)
-    input_audio = load_mp3_audio(args.input_audio_path)
+    input_audio = load_user_audio_folder(args.input_audio_folder)
     output_data = run_evaluation(input_data, input_audio)
     save_output_data(args.output_file, output_data)
 
