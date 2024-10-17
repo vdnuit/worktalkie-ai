@@ -1,7 +1,10 @@
 {
     "relevance_score": 70.0,
-    "proficiency_score": 70,
-    "proficiency_feedback": "말이 느려 신중하게 들리지만, 다소 지루하거나 비효율적으로 느껴질 수 있습니다.",
+    "proficiency_score": 90,
+    "proficiency_feedback": {
+        "speed_spm": 239.61211882458204,
+        "speed_feedback": 0
+    },
     "etiquette_score": 70.0,
     "etiquette_feedback": [
         {
@@ -19,7 +22,7 @@
         {
             "turn": "저는 다음주 목표를 말할 거예요.",
             "expression_type": 4,
-            "feedback": "표현이 다소 가벼운 느낌을 주고 있습니다. 비즈니스 상황에서는 좀 더 공식적인 표현을 사용하는 것이 좋습니다.",
+            "feedback": "표현이 다소 가벼워 비즈니스 환경에서는 적절하지 않습니다. 좀 더 전문적인 언어로 바꾸는 것이 좋습니다.",
             "fixed_turn": "저는 다음 주 목표에 대해 말씀드리겠습니다."
         }
     ]

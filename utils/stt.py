@@ -39,7 +39,7 @@ def process_stt_from_folder(input_audio_folder, output_json_folder):
             process_stt(input_audio_path, output_json_path)
 
 # 사용 예시
-input_audio_folder = 'data/user_audio'  # 오디오 파일들이 저장된 폴더
-output_json_folder = 'data/user_text'   # 변환된 결과를 저장할 폴더
+input_audio_folder = 'data/test_audio'  # 오디오 파일들이 저장된 폴더
+output_json_folder = 'data/test_text'   # 변환된 결과를 저장할 폴더
 
 process_stt_from_folder(input_audio_folder, output_json_folder)
