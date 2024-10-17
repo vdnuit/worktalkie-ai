@@ -1,7 +1,7 @@
 from utils.gpt import generate_gpt_response
 
-from .models import EvalEtiqList
-from .constants import SCRIPTS_PATH, SCRIPTS_NAME, SYSTEM_PROMPT
+from ..models import EvalEtiqList
+from ..constants import SCRIPTS_PATH, SCRIPTS_NAME, SYSTEM_PROMPT
 
 def format_script(script: str, input_data: dict) -> str:
 
@@ -49,7 +49,14 @@ def cal_manners_score(dialogue):
     
     return score
 
-def eval_etiquette(input_data):
+def process_dialogue(response):
+    for dialogue in response['dialogue']:
+        if dialogue.get('expression_type') == 0:
+            dialogue['feedback'] = None
+            dialogue['fixed_turn'] = None
+    return response
+
+def eval_etiquette(input_conv_data):
 
     # 스크립트 파일 경로 설정
     script_path = f"{SCRIPTS_PATH}/{SCRIPTS_NAME}.txt"
@@ -59,11 +66,11 @@ def eval_etiquette(input_data):
         script = file.read()
 
     # 스크립트 포맷
-    formatted_script = format_script(script, input_data)
+    formatted_script = format_script(script, input_conv_data)
     print(formatted_script)
     
     response_format = EvalEtiqList
-    valid_len = count_user_dialogue(input_data)
+    valid_len = count_user_dialogue(input_conv_data)
 
     # GPT 모델 호출
     try:
@@ -74,7 +81,8 @@ def eval_etiquette(input_data):
         print(f"오류 발생: {e}")
 
     score = cal_manners_score(response['dialogue'])
-    print(score)
+    response = process_dialogue(response)
+
     feedback = response['dialogue']
 
     return score, feedback
