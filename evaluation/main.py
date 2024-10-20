@@ -3,6 +3,7 @@ import json
 import argparse
 from .eval import run_evaluation
 from pydub import AudioSegment
+from pydub.utils import which
 
 def load_input_data(input_file):
     with open(input_file, 'r') as f:
@@ -13,10 +14,12 @@ def load_user_audio_folder(folder_path):
 
     # 폴더 내 모든 파일을 탐색
     for file_name in os.listdir(folder_path):
+        print(file_name)
         # .mp3 확장자를 가진 파일만 처리
         if file_name.endswith('.mp3'):
             audio_path = os.path.join(folder_path, file_name)
             # MP3 파일을 AudioSegment로 읽어들임
+            AudioSegment.converter = which("ffmpeg")
             audio = AudioSegment.from_mp3(audio_path)
             # 파일 제목과 오디오 객체를 딕셔너리로 묶어서 리스트에 추가
             audio_files.append({
@@ -66,8 +69,7 @@ def main():
     args = parser.parse_args()
 
     input_conv_data = load_input_data(args.input_conv_file)
-    # input_audio = load_user_audio_folder(args.input_audio_folder)
-    input_audio_list = ""
+    input_audio_list = load_user_audio_folder(args.input_audio_folder)
     input_stt_list = load_user_stt_folder(args.input_stt_folder)
 
     output_data = run_evaluation(input_conv_data, input_audio_list, input_stt_list)

@@ -1,24 +1,14 @@
-# 한글 wav2vec+커스텀 데이터셋
-# 필요한 라이브러리 임포트
 import torch
 import torchaudio
+import torchaudio.transforms as T
 from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 from torch import nn
-from torch.optim import Adam
-from torch.utils.data import DataLoader
-import numpy as np
-from tqdm import tqdm
-import os
 from pydub import AudioSegment
 
-# Hugging Face에서 사전 학습된 Wav2Vec2 모델 로드
-# processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-960h")
-# base_model = Wav2Vec2Model.from_pretrained("facebook/wav2vec2-large-960h")
 processor = Wav2Vec2Processor.from_pretrained("kresnik/wav2vec2-large-xlsr-korean")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 base_model = Wav2Vec2ForCTC.from_pretrained("kresnik/wav2vec2-large-xlsr-korean").to(device)
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # 발음 평가를 위한 모델 정의
 class PronunciationAssessmentModel(nn.Module):
@@ -73,9 +63,11 @@ def infer_pronunciation(model, audio_tensor, processor):
     # 예측된 발음 점수 반환
     return prediction.item()
 
-# 새로운 함수 정의
+
 def get_pronunciation_score(input_audio_list):
-    scores = []
+    total_score = 0
+    total_segments = 0
+    
     for audio_data in input_audio_list:
         # mp3 AudioSegment 객체를 wav로 변환
         audio = audio_data['audio'].set_frame_rate(16000).set_channels(1)
@@ -83,20 +75,49 @@ def get_pronunciation_score(input_audio_list):
         audio.export(audio_path, format="wav")
 
         # 오디오 파일 로드
-        # waveform, sample_rate = torchaudio.load(audio_path)
         waveform, sample_rate = torchaudio.load(audio_path, format="wav")
 
         if sample_rate != 16000:
-            waveform = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=16000)(waveform)
+            waveform = T.Resample(orig_freq=sample_rate, new_freq=16000)(waveform)
         waveform = waveform.squeeze(0)  # 채널 차원 제거
 
-        # 발음 점수 예측
-        score = infer_pronunciation(loaded_model, waveform, processor)
-        scores.append({
-            'title': audio_data['title'],
-            'score': score
-        })
-    return scores
+        # 오디오 길이를 초로 변환 (waveform의 크기와 sample_rate로 계산)
+        duration_seconds = waveform.shape[0] / 16000
+        
+        # 오디오가 10초보다 길면, 10초 단위로 분할하여 점수를 계산
+        segment_length = 16000 * 10  # 10초에 해당하는 샘플 수
+
+        if duration_seconds > 10:
+            # 10초 단위로 오디오를 나누어 모델에 넣음
+            num_segments = int(duration_seconds // 10)
+            for i in range(num_segments):
+                segment_start = i * segment_length
+                segment_end = segment_start + segment_length
+                segment_waveform = waveform[segment_start:segment_end]
+
+                # 발음 점수 예측
+                score = infer_pronunciation(loaded_model, segment_waveform, processor)
+                total_score += score
+                total_segments += 1
+
+            # 마지막 남은 부분도 평가 (10초 미만 남은 부분)
+            if waveform.shape[0] % segment_length != 0:
+                remaining_waveform = waveform[num_segments * segment_length:]
+                score = infer_pronunciation(loaded_model, remaining_waveform, processor)
+                total_score += score
+                total_segments += 1
+
+        else:
+            # 오디오 길이가 10초 이하면, 전체를 모델에 넣음
+            score = infer_pronunciation(loaded_model, waveform, processor)
+            total_score += score
+            total_segments += 1
+
+    # 전체 세그먼트의 평균 점수 계산
+    avg_score = total_score / total_segments if total_segments > 0 else 0
+    
+    return avg_score
+
 
 # 저장된 모델 경로 설정
 model_save_path = "model/assessment_model.pth"  # 저장된 모델 파일 경로
@@ -104,19 +125,19 @@ model_save_path = "model/assessment_model.pth"  # 저장된 모델 파일 경로
 # 모델 불러오기
 loaded_model = load_model(model_save_path, base_model, device)
 
-# 예제 오디오 리스트 평가
-input_audio_list = [
-    {
-        'title': 'USER_0001',
-        'audio': AudioSegment.from_mp3("data/test_audio/USER_0001.mp3")
-    },
-    {
-        'title': 'USER_0002',
-        'audio': AudioSegment.from_mp3("data/test_audio/USER_0002.mp3")
-    }
-]
+# # 예제 오디오 리스트 평가
+# input_audio_list = [
+#     {
+#         'title': 'USER_0001',
+#         'audio': AudioSegment.from_mp3("data/test_audio/USER_0001.mp3")
+#     },
+#     {
+#         'title': 'USER_0002',
+#         'audio': AudioSegment.from_mp3("data/test_audio/USER_0002.mp3")
+#     }
+# ]
 
-# 발음 점수 가져오기
-scores = get_pronunciation_score(input_audio_list)
-for score in scores:
-    print(f"Title: {score['title']}, Predicted Pronunciation Score: {score['score']:.2f}")
+# # 발음 점수 가져오기
+# scores = get_pronunciation_score(input_audio_list)
+# for score in scores:
+#     print(f"Title: {score['title']}, Predicted Pronunciation Score: {score['score']:.2f}")

@@ -6,15 +6,18 @@ def eval_proficiency(input_conv_data, input_audio_list, input_stt_list):
     
     speed_score, speed_spm, speed_feedback = get_speech_speed(input_stt_list)
 
+    pronunciation_score, pronunciation_level, pronunciation_feedback = get_pronunciation_score(input_audio_list)
+
     pause_score, pause_ratio, pause_feedback = get_pause_ratio(input_stt_list)
 
-    pronunciation_score = get_pronunciation_score(input_audio_list)
-
-    proficiency_score = (speed_score+pause_score)/2
+    proficiency_score = (speed_score+pronunciation_score+pause_score)/3
     proficiency_feedback = {
         'speed_score': speed_score,
         'speed_spm': speed_spm,
         'speed_feedback': speed_feedback,
+        'pronunciation_score': pronunciation_score,
+        'pronunciation_level': pronunciation_level,
+        'pronunciation_feedback': pronunciation_feedback,
         'pause_score': pause_score,
         'pause_ratio': pause_ratio,
         'pause_feedback': pause_feedback
