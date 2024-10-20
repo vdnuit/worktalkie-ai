@@ -14,7 +14,6 @@ def load_user_audio_folder(folder_path):
 
     # 폴더 내 모든 파일을 탐색
     for file_name in os.listdir(folder_path):
-        print(file_name)
         # .mp3 확장자를 가진 파일만 처리
         if file_name.endswith('.mp3'):
             audio_path = os.path.join(folder_path, file_name)

@@ -6,3 +6,4 @@ all_clips
 sampled_clips.zip
 parsing.py
 model/assessment_model.pth
+model/best_model.pth

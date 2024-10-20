@@ -3,7 +3,7 @@ import torchaudio
 import torchaudio.transforms as T
 from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 from torch import nn
-from pydub import AudioSegment
+from ...constants import PronunciationFeedback
 
 processor = Wav2Vec2Processor.from_pretrained("kresnik/wav2vec2-large-xlsr-korean")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -64,7 +64,7 @@ def infer_pronunciation(model, audio_tensor, processor):
     return prediction.item()
 
 
-def get_pronunciation_score(input_audio_list):
+def cal_pronunciation_score(input_audio_list):
     total_score = 0
     total_segments = 0
     
@@ -118,9 +118,25 @@ def get_pronunciation_score(input_audio_list):
     
     return avg_score
 
+def pronunciation_rating(pronunciation_level):
+    # 0 ~ 4 이상의 범위에 따라 발음 레벨을 결정
+    if pronunciation_level <= 2:
+        return 60, PronunciationFeedback.LOW
+    elif 2 < pronunciation_level <= 3:
+        return 80, PronunciationFeedback.MID
+    elif 3 < pronunciation_level <= 4:
+        return 90, PronunciationFeedback.HIGH
+    else:
+        return 100, PronunciationFeedback.VERY_HIGH
+
+def get_pronunciation_score(input_audio_list):
+    pronunciation_level = cal_pronunciation_score(input_audio_list)
+    pronunciation_score, pronunciation_feedback = pronunciation_rating(pronunciation_level)
+
+    return pronunciation_score, pronunciation_level, pronunciation_feedback
 
 # 저장된 모델 경로 설정
-model_save_path = "model/assessment_model.pth"  # 저장된 모델 파일 경로
+model_save_path = "model/best_model.pth"  # 저장된 모델 파일 경로
 
 # 모델 불러오기
 loaded_model = load_model(model_save_path, base_model, device)
