@@ -1,9 +1,13 @@
 {
     "relevance_score": 70.0,
-    "proficiency_score": 90,
+    "proficiency_score": 90.0,
     "proficiency_feedback": {
+        "speed_score": 90,
         "speed_spm": 239.61211882458204,
-        "speed_feedback": 0
+        "speed_feedback": "전달은 명확하지만, 조금 더 속도를 내면 듣는 이에게 더 자연스러울 수 있습니다.",
+        "pause_score": 90,
+        "pause_ratio": 0.48470994732312833,
+        "pause_feedback": "약간의 머뭇거림이나 말을 멈추는 지점이 있지만, 크게 방해되지 않습니다."
     },
     "etiquette_score": 70.0,
     "etiquette_feedback": [
@@ -22,7 +26,7 @@
         {
             "turn": "저는 다음주 목표를 말할 거예요.",
             "expression_type": 4,
-            "feedback": "표현이 다소 가벼워 비즈니스 환경에서는 적절하지 않습니다. 좀 더 전문적인 언어로 바꾸는 것이 좋습니다.",
+            "feedback": "비즈니스 상황에서 '말할 거예요'와 같은 표현은 다소 가볍게 들릴 수 있습니다. 보다 전문적이고 격식 있는 표현으로 바꾸는 것이 좋습니다.",
             "fixed_turn": "저는 다음 주 목표에 대해 말씀드리겠습니다."
         }
     ]

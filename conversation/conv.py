@@ -54,10 +54,11 @@ def run_conversation(input_data):
     print(response)
 
     # 대화 업데이트
-    input_data['dialogue'].append({"AI": response['answer']})
-
-    # 미션 업데이트
-    if status in {"continue_conversation", "terminate_conversation"}:
+    if status == "start_conversation":
+        input_data['dialogue'].append({"AI": response['greetings']})
+    # 대화+미션 업데이트
+    else:
+        input_data['dialogue'].append({"AI": response['answer']})
         input_data = update_missions(input_data, response)
         input_data = update_is_end(input_data, response, status)
     

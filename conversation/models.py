@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class StartConv(BaseModel):
-    answer: str
+    greetings: str
 
 class ContinueConv(BaseModel):
     answer: str

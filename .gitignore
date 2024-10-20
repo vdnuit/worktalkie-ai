@@ -1,3 +1,8 @@
 test.py
 data/test_text
 data/test_audio
+non_native_data
+all_clips
+sampled_clips.zip
+parsing.py
+model/assessment_model.pth
