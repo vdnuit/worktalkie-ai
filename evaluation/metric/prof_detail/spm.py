@@ -1,7 +1,7 @@
 from statistics import mean
 import re
 
-from ..constants import SpeechSpeedFeedback
+from ...constants import SpeechSpeedFeedback
 
 def count_syllables(text):
     # 문장 부호와 공백 제거

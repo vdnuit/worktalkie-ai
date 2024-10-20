@@ -1,4 +1,4 @@
-from ..constants import PauseRatioFeedback
+from ...constants import PauseRatioFeedback
 
 from statistics import mean
 import string

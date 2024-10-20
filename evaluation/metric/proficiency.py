@@ -1,5 +1,5 @@
-from .spm import get_speech_speed
-from .pause import get_pause_ratio
+from .prof_detail.spm import get_speech_speed
+from .prof_detail.pause import get_pause_ratio
 
 def eval_proficiency(input_conv_data, input_audio_list, input_stt_list):
     
