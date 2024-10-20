@@ -16,9 +16,9 @@ def run_evaluation(input_conv_data, input_audio_list, input_stt_list):
     etiquette_score, etiquette_feedback = eval_etiquette(input_conv_data)
 
     return {
-        'relevance_score': relevance_score,
-        'proficiency_score': proficiency_score,
+        'relevance_score': int(relevance_score),
+        'proficiency_score': int(proficiency_score),
         'proficiency_feedback': proficiency_feedback,
-        'etiquette_score': etiquette_score,
+        'etiquette_score': int(etiquette_score),
         'etiquette_feedback': etiquette_feedback
     }

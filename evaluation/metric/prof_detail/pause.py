@@ -13,8 +13,8 @@ def cal_pause_ratio(input_stt_list):
         if len(turn['data']['segments']) !=1:
             print("data.segment 확인 요망")
             exit()
-        start_time = data['start']
-        end_time = data['end']
+        start_time = data['words'][0][0]
+        end_time = data['words'][-1][1]
 
         speech_time = 0
         for word in data['words']:
@@ -28,11 +28,11 @@ def cal_pause_ratio(input_stt_list):
     return mean(pause_list)
 
 def pause_rating(pause_ratio):
-    if pause_ratio <= 0.4:
+    if pause_ratio <= 0.3:
         return 100, PauseRatioFeedback.MODERATE
-    elif 0.4 < pause_ratio <= 0.5:
+    elif 0.3 < pause_ratio <= 0.4:
         return 90, PauseRatioFeedback.SLIGHTLY_HIGH
-    elif 0.5 < pause_ratio <= 0.6:
+    elif 0.4 < pause_ratio <= 0.5:
         return 70, PauseRatioFeedback.HIGH
     else:
         return 50, PauseRatioFeedback.VERY_HIGH

@@ -38,15 +38,15 @@ def cal_speech_speed(input_stt_list):
 def speech_speed_rating(spm):
     if spm <= 99:
         return 50, SpeechSpeedFeedback.VERY_SLOW
-    elif 99 < spm <= 198:
+    elif 100 < spm <= 130:
         return 70, SpeechSpeedFeedback.SLOW
-    elif 198 < spm <= 264:
+    elif 130 < spm <= 200:
         return 90, SpeechSpeedFeedback.SLIGHTLY_SLOW
-    elif 264 < spm <= 400:
+    elif 200 < spm <= 350:
         return 100, SpeechSpeedFeedback.NORMAL
-    elif 400 < spm <= 520:
+    elif 350 < spm <= 400:
         return 90, SpeechSpeedFeedback.SLIGHTLY_FAST
-    elif 520 < spm <= 600:
+    elif 400 < spm <= 450:
         return 70, SpeechSpeedFeedback.FAST
     else:
         return 50, SpeechSpeedFeedback.VERY_FAST
