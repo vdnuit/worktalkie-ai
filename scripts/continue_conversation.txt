@@ -14,7 +14,7 @@
 * If you don't know the user's name or information, do not mention it. (Do not leave blanks in the response)
 
 ## Roleplaying Topic
-{senario}
+{scenario}
 
 ## USER's Given Situation
 {background}

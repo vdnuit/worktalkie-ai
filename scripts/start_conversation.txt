@@ -8,7 +8,7 @@
 * If you don't know the USER's name or information, do not mention it. (Do not leave blanks in the response)
 
 ## USER's Roleplaying Topic (Not Yours)
-For USER: "{senario}"
+For USER: "{scenario}"
 
 ## USER's Situation (Not Yours)
 For USER: "{background}"
